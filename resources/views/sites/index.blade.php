@@ -12,6 +12,7 @@
                         <th>ID</th>
                         <th>URL</th>
                         <th>Created</th>
+                        <th>Links qlt.</th>
                         <th class="text-center">Show</th>
                         <th class="text-center">Remove</th>
                     </tr>
@@ -22,6 +23,7 @@
                             <td>{{ $site->id }}</td>
                             <td>{{ $site->url }}</td>
                             <td>{{ $site->created_at }}</td>
+                            <td>{{ count($site->links) }}</td>
                             <td class="text-center">
                                 <a class="btn btn-primary btn-sm"
                                    href="{{ action('ParseSitesController@show', ['id' => $site->id]) }}">
@@ -47,6 +49,7 @@
                             <th>ID</th>
                             <th>URL</th>
                             <th>Created</th>
+                            <th>Links qlt.</th>
                             <th class="text-center">Show</th>
                             <th class="text-center">Remove</th>
                         </tr>

@@ -8,24 +8,25 @@ use Illuminate\Http\Request;
 
 class ParseSitesController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         $sites = ParseSites::all();
 
         return view('sites.index', compact('sites'));
     }
 
-    public function show($id) {
-        $site = ParseSites::find($id);
-        $links = SiteLinks::where('site_id', $id)->get();
-
-        return view('sites.show', compact('site', 'links'));
-    }
-
-    public function destroy($id) {
-        //dd($id, 'test');
+    public function show($id)
+    {
 
         $site = ParseSites::findOrFail($id);
-        $site->delete();
+
+        return view('sites.show', compact('site'));
+    }
+
+    public function destroy($id)
+    {
+
+        ParseSites::findOrFail($id)->delete();
 
         return redirect()->back();
     }

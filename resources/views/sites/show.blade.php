@@ -4,8 +4,8 @@
     <div class="container py-4">
         {{--{{ dump($site) }}
         {{ dump($links) }}--}}
-        <h1 class="mb-4">Site - <span class="h4">{{ $site->url }}</span></h1>
-        @if(count($links))
+        <h1 class="mb-4">Site - <span class="h4 text">{{ $site->url }}</span></h1>
+        @if(count($site->links))
             <div class="table-responsive">
                 <table class="table table-bordered table-hover table-sm">
                     <caption>List of site links</caption>
@@ -13,21 +13,26 @@
                     <tr>
                         <th>ID</th>
                         <th>URL</th>
+                        <th>Parent ID</th>
+                        <th>Children ID</th>
                         <th class="text-center">External</th>
+                        <th class="text-center">Status</th>
                         <th>Created</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($links as $link)
+                    @foreach($site->links as $link)
                         <tr>
                             <td>{{ $link->id }}</td>
                             <td>
-                                @if(strlen($link->url) >= 60)
-                                    <span class="ellipsis">{{ $link->url }}</span>
+                                @if(strlen($link->path) >= 60)
+                                    <span class="ellipsis">{{ $link->path }}</span>
                                 @else
-                                    {{ $link->url }}
+                                    {{ $link->path }}
                                 @endif
                             </td>
+                            <td>{{ $link->parent_id }}</td>
+                            <td>{{ $link->children_id }}</td>
                             <td class="text-center">
                                 @if($link->external)
                                     <i class="fas fa-check text-warning" aria-hidden="true"></i>
@@ -35,16 +40,20 @@
                                     <i class="fas fa-times text-muted" aria-hidden="true"></i>
                                 @endif
                             </td>
+                            <td class="text-center">{{ $link->status }}</td>
                             <td>{{ $link->created_at }}</td>
                         </tr>
                     @endforeach
                     </tbody>
-                    @if(count($links) > 20)
+                    @if(count($site->links) > 20)
                         <tfoot class="thead-dark">
                         <tr>
                             <th>ID</th>
                             <th>URL</th>
+                            <th>Parent ID</th>
+                            <th>Children ID</th>
                             <th class="text-center">External</th>
+                            <th class="text-center">Status</th>
                             <th>Created</th>
                         </tr>
                         </tfoot>
