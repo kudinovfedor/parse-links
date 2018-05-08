@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class ParseSites
  * @package App\Model
+ *
+ * @property-read \App\Model\SiteLinks $links
  */
 class ParseSites extends Model
 {

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Jobs\ParseLinksJob;
 use App\Model\ParseSites;
 use App\Model\SiteLinks;
-use function foo\func;
 use Illuminate\Http\Request;
 use Yangqi\Htmldom\Htmldom;
 
@@ -25,70 +24,49 @@ class FrontController extends Controller
         $site_url  = $request->input('url');
         $site_host = parse_url($site_url)['host'];
 
-        $site_id          = ParseSites::firstOrCreate(['url' => $site_url])->toArray()['id'];
-        $site_links       = SiteLinks::where('site_id', $site_id)->get(['url']);
-        $site_links_array = [];
+        $site_model = ParseSites::firstOrCreate(['url' => $site_url]);
+        $site_id    = $site_model->toArray()['id'];
 
-        if ($site_links->count()) {
-            $site_links_array = array_map(function ($item) {
+        $links_model  = SiteLinks::notProcessed($site_id);
+        $links_object = $links_model->get(['url']);
+        $links_array  = [];
+
+        if ($links_object->count()) {
+            $links_array = array_map(function ($item) {
                 return $item['url'];
-            }, $site_links->toArray());
+            }, $links_object->toArray());
         };
 
         $html = new Htmldom($site_url);
 
-        $links = [];
+        $html_links = [];
 
         foreach ($html->find('a') as $link) {
 
-            /*$parse_link = parse_url($link->href);
-
-            $link_host = isset($parse_link['host']) ? $parse_link['host'] : false;
-
-            if ($link_host && $site_host === $link_host && isset($parse_link['path']) && !in_array($link->href, $links, true)) {
-
-                //dump(trim($link->innertext));
-                //dump(trim($link->plaintext));
-
-                //$links[] = $link->href;
-                $links[] = $link->href;
-            }*/
-
-            if ( ! in_array($link->href, $site_links_array)) {
-                $links[] = $link->href;
+            if ( ! in_array($link->href, $links_array)) {
+                $html_links[] = $link->href;
             }
-
 
         }
 
-        //dump($links);
-        //dd($site_links->toArray());
-
-
-        $links = $this->filterUnique($links);
-        $links = $this->filterExcludeExternalLinks($links, $site_host);
-
-        //dd($links);
+        $html_links = $this->filterUnique($html_links);
+        $html_links = $this->filterExcludeExternalLinks($html_links, $site_host);
 
         $links_db = [];
 
-        foreach ($links as $link) {
+        foreach ($html_links as $link) {
 
             $parse_link = parse_url($link);
 
-            $link_host = $parse_link['host'] ?? false;
+            //$link_host = $parse_link['host'] ?? false;
 
-            /*if($link_host) {
-                dump($parse_link);
-            }*/
-
-            $is_external = $site_host !== $link_host;
+            //$is_external = $site_host !== $link_host;
 
             $links_db[] = [
                 'url'        => $link,
                 'path'       => $parse_link['path'] ?? '/',
                 'site_id'    => $site_id,
-                'external'   => $is_external,
+                //'external'   => $is_external,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -98,12 +76,9 @@ class FrontController extends Controller
 
         \DB::table('site_links')->insert($links_db);
 
-        //dump($request->all());
-        //dump($html);
-
-        //dd($links);
-
-        //dispatch(new ParseLinksJob())->onQueue('parse');
+        /*foreach (SiteLinks::notProcessed($site_id)->get(['url']) as $item) {
+            dispatch(new ParseLinksJob($item->url, $site_id))->onQueue('parse');
+        }*/
 
         return redirect()->back();
 

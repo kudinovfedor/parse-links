@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Model\ParseSites;
-use App\Model\SiteLinks;
 use Illuminate\Http\Request;
 
 class ParseSitesController extends Controller
 {
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         $sites = ParseSites::all();
@@ -15,18 +17,29 @@ class ParseSitesController extends Controller
         return view('sites.index', compact('sites'));
     }
 
+    /**
+     * @param $id
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function show($id)
     {
 
-        $site = ParseSites::findOrFail($id);
+        $site = ParseSites::find($id);
 
         return view('sites.show', compact('site'));
     }
 
+    /**
+     * @param $id
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
     public function destroy($id)
     {
 
-        ParseSites::findOrFail($id)->delete();
+        ParseSites::find($id)->delete();
 
         return redirect()->back();
     }

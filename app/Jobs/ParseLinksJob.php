@@ -14,17 +14,18 @@ class ParseLinksJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $url;
+    public $site_id;
 
     /**
      * Create a new job instance.
      *
      * @param $url
-     *
-     * @return void
+     * @param $site_id
      */
-    public function __construct($url)
+    public function __construct($url, $site_id)
     {
         $this->url = $url;
+        $this->site_id = $site_id;
     }
 
     /**

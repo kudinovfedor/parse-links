@@ -13,10 +13,11 @@
                     <tr>
                         <th>ID</th>
                         <th>URL</th>
-                        <th>Parent ID</th>
+                        {{--<th>Parent ID</th>
                         <th>Children ID</th>
                         <th class="text-center">External</th>
-                        <th class="text-center">Status</th>
+                        <th class="text-center">Status</th>--}}
+                        <th class="text-center">Processed</th>
                         <th>Created</th>
                     </tr>
                     </thead>
@@ -31,7 +32,7 @@
                                     {{ $link->path }}
                                 @endif
                             </td>
-                            <td>{{ $link->parent_id }}</td>
+                            {{--<td>{{ $link->parent_id }}</td>
                             <td>{{ $link->children_id }}</td>
                             <td class="text-center">
                                 @if($link->external)
@@ -40,7 +41,8 @@
                                     <i class="fas fa-times text-muted" aria-hidden="true"></i>
                                 @endif
                             </td>
-                            <td class="text-center">{{ $link->status }}</td>
+                            <td class="text-center">{{ $link->status }}</td>--}}
+                            <td class="text-center">{{ $link->processed ? 'Yes' : 'No' }}</td>
                             <td>{{ $link->created_at }}</td>
                         </tr>
                     @endforeach
@@ -50,10 +52,11 @@
                         <tr>
                             <th>ID</th>
                             <th>URL</th>
-                            <th>Parent ID</th>
+                            {{--<th>Parent ID</th>
                             <th>Children ID</th>
                             <th class="text-center">External</th>
-                            <th class="text-center">Status</th>
+                            <th class="text-center">Status</th>--}}
+                            <th class="text-center">Processed</th>
                             <th>Created</th>
                         </tr>
                         </tfoot>
