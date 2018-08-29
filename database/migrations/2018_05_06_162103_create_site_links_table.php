@@ -23,7 +23,7 @@ class CreateSiteLinksTable extends Migration
             //$table->boolean('external')->default(false);
             $table->boolean('processed')->default(false);
             $table->unsignedInteger('site_id');
-            $table->foreign('site_id')->references('id')->on('parse_sites');
+            $table->foreign('site_id')->references('id')->on('parse_sites')->onDelete('cascade');
             $table->timestamps();
         });
     }

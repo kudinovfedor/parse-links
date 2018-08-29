@@ -17,6 +17,7 @@ class ParseSites extends Model
      */
     protected $fillable = [
         'url',
+        'domain',
     ];
 
     /**
@@ -24,6 +25,6 @@ class ParseSites extends Model
      */
     public function links()
     {
-        return $this->hasMany('App\Model\SiteLinks', 'site_id');
+        return $this->hasMany('App\Model\SiteLinks', 'site_id')->orderBy('path');
     }
 }

@@ -10,7 +10,8 @@
                     <thead class="thead-dark">
                     <tr>
                         <th>ID</th>
-                        <th>URL</th>
+                        {{--<th>URL</th>--}}
+                        <th>Domain</th>
                         <th>Created</th>
                         <th>Links qlt.</th>
                         <th class="text-center">Show</th>
@@ -21,7 +22,8 @@
                     @foreach($sites as $site)
                         <tr>
                             <td>{{ $site->id }}</td>
-                            <td>{{ $site->url }}</td>
+                            {{--<td>{{ $site->url }}</td>--}}
+                            <td>{{ $site->domain }}</td>
                             <td>{{ $site->created_at }}</td>
                             <td>{{ count($site->links) }}</td>
                             <td class="text-center">
@@ -47,7 +49,8 @@
                         <tfoot class="thead-dark">
                         <tr>
                             <th>ID</th>
-                            <th>URL</th>
+                            {{--<th>URL</th>--}}
+                            <th>Domain</th>
                             <th>Created</th>
                             <th>Links qlt.</th>
                             <th class="text-center">Show</th>

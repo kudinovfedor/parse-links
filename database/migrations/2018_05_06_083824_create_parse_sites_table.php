@@ -16,6 +16,7 @@ class CreateParseSitesTable extends Migration
         Schema::create('parse_sites', function (Blueprint $table) {
             $table->increments('id');
             $table->string('url', 255);
+            $table->string('domain', 255);
             $table->unsignedInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();

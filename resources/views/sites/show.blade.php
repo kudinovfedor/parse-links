@@ -2,9 +2,19 @@
 
 @section('content')
     <div class="container py-4">
-        {{--{{ dump($site) }}
-        {{ dump($links) }}--}}
-        <h1 class="mb-4">Site - <span class="h4 text">{{ $site->url }}</span></h1>
+        <div class="row mb-4 align-items-end">
+            <div class="col-md-8">
+                <h1 class="mb-0">Site - <span class="h4 text">{{ $site->url }}</span></h1>
+            </div>
+            @if($count = $site->links()->where('processed', false)->count())
+                <div class="col-md-4 text-right">
+                    <form action="{{ action('FrontController@processing', ['id' => $site->id]) }}" method="post">
+                        {{ csrf_field() }}
+                        <button type="submit" class="btn btn-info btn-sm">Processing ({{ $count }})</button>
+                    </form>
+                </div>
+            @endif
+        </div>
         @if(count($site->links))
             <div class="table-responsive">
                 <table class="table table-bordered table-hover table-sm">
@@ -22,7 +32,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($site->links as $link)
+                    @foreach($site->links()->paginate(10) as $link)
                         <tr>
                             <td>{{ $link->id }}</td>
                             <td>
@@ -32,6 +42,13 @@
                                     {{ $link->path }}
                                 @endif
                             </td>
+                            {{--<td>
+                                @if(strlen($link->url) >= 60)
+                                    <span class="ellipsis2">{{ $link->url }}</span>
+                                @else
+                                    {{ $link->url }}
+                                @endif
+                            </td>--}}
                             {{--<td>{{ $link->parent_id }}</td>
                             <td>{{ $link->children_id }}</td>
                             <td class="text-center">

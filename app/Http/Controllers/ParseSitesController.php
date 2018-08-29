@@ -12,7 +12,7 @@ class ParseSitesController extends Controller
      */
     public function index()
     {
-        $sites = ParseSites::all();
+        $sites = ParseSites::all()->sortBy('domain');
 
         return view('sites.index', compact('sites'));
     }
