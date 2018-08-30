@@ -24,17 +24,24 @@ class FrontController extends Controller
         $site_url = $request->input('url');
         $parse_url = parse_url($site_url);
 
-        $site_model = ParseSites::firstOrCreate(['url' => $site_url, 'domain' => $parse_url['host']]);
-        $site_id = $site_model->toArray()['id'];
+        $site = new ParseSites;
 
-        $parse = new ParseHtml($site_url);
+        if (!$site::where('url', '=', $site_url)->first()) {
 
-        $site_links = $parse->links();
+            $site_model = $site::firstOrCreate(['url' => $site_url, 'domain' => $parse_url['host']]);
 
-        $this->saveSiteLinks($site_links, $site_id);
+            $site_id = $site_model->id;
 
-        foreach ($site_links as $link) {
-            ParseLinksJob::dispatch($link, $site_id);
+            $parse = new ParseHtml($site_url);
+
+            $site_links = $parse->links();
+
+            $this->saveSiteLinks($site_links, $site_id);
+
+            foreach ($site_links as $link) {
+                ParseLinksJob::dispatch($link, $site_id);
+            }
+
         }
 
         return redirect()->back();

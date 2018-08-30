@@ -4,9 +4,9 @@
     <div class="container py-4">
         <div class="row mb-4 align-items-end">
             <div class="col-md-8">
-                <h1 class="mb-0">Site - <span class="h4 text">{{ $site->url }}</span></h1>
+                <h1 class="mb-0">Site - <span class="h4 text">{{ $site->url }} ({{ count($site->links) }})</span></h1>
             </div>
-            @if($count = $site->links()->where('processed', false)->count())
+            @if($count = $site->notProcessed()->count())
                 <div class="col-md-4 text-right">
                     <form action="{{ action('FrontController@processing', ['id' => $site->id]) }}" method="post">
                         {{ csrf_field() }}
@@ -32,23 +32,23 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($site->links()->paginate(10) as $link)
+                    @foreach($site->links as $link)
                         <tr>
                             <td>{{ $link->id }}</td>
-                            <td>
+                            {{--<td>
                                 @if(strlen($link->path) >= 60)
                                     <span class="ellipsis">{{ $link->path }}</span>
                                 @else
                                     {{ $link->path }}
                                 @endif
-                            </td>
-                            {{--<td>
+                            </td>--}}
+                            <td>
                                 @if(strlen($link->url) >= 60)
-                                    <span class="ellipsis2">{{ $link->url }}</span>
+                                    <span class="ellipsis">{{ $link->url }}</span>
                                 @else
                                     {{ $link->url }}
                                 @endif
-                            </td>--}}
+                            </td>
                             {{--<td>{{ $link->parent_id }}</td>
                             <td>{{ $link->children_id }}</td>
                             <td class="text-center">

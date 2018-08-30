@@ -20,6 +20,17 @@ class ParseSites extends Model
         'domain',
     ];
 
+
+    public function scopeProcessed()
+    {
+        return $this->links()->where('processed', true);
+    }
+
+    public function scopeNotProcessed()
+    {
+        return $this->links()->where('processed', false);
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
