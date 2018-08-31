@@ -28,12 +28,12 @@
                             <td>{{ count($site->links) }}</td>
                             <td class="text-center">
                                 <a class="btn btn-primary btn-sm"
-                                   href="{{ action('ParseSitesController@show', ['id' => $site->id]) }}">
+                                   href="{{ action('SitesController@show', ['id' => $site->id]) }}">
                                     View
                                 </a>
                             </td>
                             <td class="text-center">
-                                <form action="{{ action('ParseSitesController@destroy', ['id' => $site->id]) }}"
+                                <form action="{{ action('SitesController@destroy', ['id' => $site->id]) }}"
                                       method="POST">
                                     @csrf
                                     @method('DELETE')

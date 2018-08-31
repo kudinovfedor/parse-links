@@ -5,13 +5,13 @@ namespace App\Model;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class SiteLinks
+ * Class Links
  * @package App\Model
  *
- * @property-read \App\Model\ParseSites $site
- * @method static \Illuminate\Database\Eloquent\Builder|SiteLinks notProcessed($site_id)
+ * @property-read \App\Model\Sites $site
+ * @method static \Illuminate\Database\Eloquent\Builder|Links notProcessed($site_id)
  */
-class SiteLinks extends Model
+class Links extends Model
 {
     /**
      * @var array
@@ -40,6 +40,6 @@ class SiteLinks extends Model
      */
     public function site()
     {
-        return $this->belongsTo('App\Model\ParseSites');
+        return $this->belongsTo('App\Model\Sites');
     }
 }

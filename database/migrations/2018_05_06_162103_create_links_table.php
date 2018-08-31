@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSiteLinksTable extends Migration
+class CreateLinksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateSiteLinksTable extends Migration
      */
     public function up()
     {
-        Schema::create('site_links', function (Blueprint $table) {
+        Schema::create('links', function (Blueprint $table) {
             $table->increments('id');
             $table->string('url', 255);
             $table->string('path', 255);
@@ -23,7 +23,7 @@ class CreateSiteLinksTable extends Migration
             //$table->boolean('external')->default(false);
             $table->boolean('processed')->default(false);
             $table->unsignedInteger('site_id');
-            $table->foreign('site_id')->references('id')->on('parse_sites')->onDelete('cascade');
+            $table->foreign('site_id')->references('id')->on('sites')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -35,6 +35,6 @@ class CreateSiteLinksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('site_links');
+        Schema::dropIfExists('links');
     }
 }

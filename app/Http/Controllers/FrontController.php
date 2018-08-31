@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ParseLinksJob;
 use App\Logic\Parse\ParseHtml;
-use App\Model\ParseSites;
-use App\Model\SiteLinks;
+use App\Model\Sites;
+use App\Model\Links;
 use Illuminate\Http\Request;
 
 class FrontController extends Controller
@@ -24,7 +24,7 @@ class FrontController extends Controller
         $site_url = $request->input('url');
         $parse_url = parse_url($site_url);
 
-        $site = new ParseSites;
+        $site = new Sites;
 
         if (!$site::where('url', '=', $site_url)->first()) {
 
@@ -50,7 +50,7 @@ class FrontController extends Controller
 
     public function processing($id)
     {
-        foreach (SiteLinks::notProcessed($id)->get(['url'])->toArray() as $item) {
+        foreach (Links::notProcessed($id)->get(['url'])->toArray() as $item) {
             ParseLinksJob::dispatch($item['url'], $id);
         }
 
@@ -74,6 +74,6 @@ class FrontController extends Controller
             ];
         }
 
-        \DB::table('site_links')->insert($links_db);
+        \DB::table('links')->insert($links_db);
     }
 }

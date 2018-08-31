@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\ParseSites;
+use App\Model\Sites;
 use Illuminate\Http\Request;
 
-class ParseSitesController extends Controller
+class SitesController extends Controller
 {
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
-        $sites = ParseSites::all()->sortBy('domain');
+        $sites = Sites::all()->sortBy('domain');
 
         return view('sites.index', compact('sites'));
     }
@@ -25,7 +25,7 @@ class ParseSitesController extends Controller
     public function show($id)
     {
 
-        $site = ParseSites::find($id);
+        $site = Sites::find($id);
 
         return view('sites.show', compact('site'));
     }
@@ -39,7 +39,7 @@ class ParseSitesController extends Controller
     public function destroy($id)
     {
 
-        ParseSites::find($id)->delete();
+        Sites::find($id)->delete();
 
         return redirect()->back();
     }

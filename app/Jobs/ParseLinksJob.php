@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Logic\Parse\ParseHtml;
-use App\Model\SiteLinks;
+use App\Model\Links;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -67,8 +67,8 @@ class ParseLinksJob implements ShouldQueue
         $parse = new ParseHtml($this->url);
         $new_links = $parse->links();
 
-        //$not_processed = SiteLinks::notProcessed($this->site_id)->get(['url']);
-        $not_processed = SiteLinks::all(['url']);
+        //$not_processed = Links::notProcessed($this->site_id)->get(['url']);
+        $not_processed = Links::all(['url']);
         $current_links = [];
 
         foreach ($not_processed as $item) {
@@ -98,11 +98,11 @@ class ParseLinksJob implements ShouldQueue
                 ];
             }
 
-            \DB::table('site_links')->insert($links_db);
+            \DB::table('links')->insert($links_db);
 
         }
 
-        SiteLinks::where('site_id', $this->site_id)->where('url', $this->url)->update(['processed' => true]);
+        Links::where('site_id', $this->site_id)->where('url', $this->url)->update(['processed' => true]);
 
     }
 }

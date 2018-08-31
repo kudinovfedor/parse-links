@@ -15,9 +15,9 @@ Route::get('/', 'FrontController@index')->name('front');
 Route::post('/', 'FrontController@store');
 Route::post('/process/{id}', 'FrontController@processing');
 
-Route::get('/sites', 'ParseSitesController@index')->name('sites');
-Route::get('/sites/{id}', 'ParseSitesController@show');
-Route::delete('/sites/delete/{id}', 'ParseSitesController@destroy');
+Route::get('/sites', 'SitesController@index')->name('sites');
+Route::get('/sites/{id}', 'SitesController@show');
+Route::delete('/sites/delete/{id}', 'SitesController@destroy');
 
 Auth::routes();
 

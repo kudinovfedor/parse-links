@@ -5,12 +5,12 @@ namespace App\Model;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class ParseSites
+ * Class Sites
  * @package App\Model
  *
- * @property-read \App\Model\SiteLinks $links
+ * @property-read \App\Model\Links $links
  */
-class ParseSites extends Model
+class Sites extends Model
 {
     /**
      * @var array
@@ -36,6 +36,6 @@ class ParseSites extends Model
      */
     public function links()
     {
-        return $this->hasMany('App\Model\SiteLinks', 'site_id')->orderBy('path');
+        return $this->hasMany('App\Model\Links', 'site_id')->orderBy('path');
     }
 }
