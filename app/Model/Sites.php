@@ -20,15 +20,27 @@ class Sites extends Model
         'domain',
     ];
 
-
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function scopeProcessed()
     {
         return $this->links()->where('processed', true);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function scopeNotProcessed()
     {
         return $this->links()->where('processed', false);
+    }
+
+    /**
+     * @return int
+     */
+    public function scopeLinksCount() {
+        return $this->links()->count();
     }
 
     /**

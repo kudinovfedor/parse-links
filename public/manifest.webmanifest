@@ -1,0 +1,22 @@
+{
+    "name": "JoomPress",
+    "short_name": "JP",
+    "description": "Статьи по программированию, разработке и оптимизации веб-сайтов. Скрипты, библиотеки, алгоритмы и другие полезные материалы в помощь веб-разработчику.",
+    "icons": [
+        {
+            "src": "https://joompress.biz/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "https://joompress.biz/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#146994",
+    "background_color": "#146994",
+    "display": "standalone",
+    "orientation": "natural",
+    "start_url": "/"
+}

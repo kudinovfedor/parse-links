@@ -67,6 +67,7 @@ class ParseHtml
     {
         $this->filter_links = $this->fixRelativeLinks($links, $this->site);
         $this->filter_links = $this->filterExcludeFragment($this->filter_links);
+        //$this->filter_links = $this->filterExcludeQuery($this->filter_links);
         $this->filter_links = $this->filterExcludeExternalLinks($this->filter_links, $this->site['host']);
         $this->filter_links = $this->filterExcludeImages($this->filter_links);
         $this->filter_links = $this->filterExcludeDocuments($this->filter_links);
@@ -89,6 +90,23 @@ class ParseHtml
             $fragment = parse_url($value, PHP_URL_FRAGMENT);
 
             return $fragment === null;
+
+        }, ARRAY_FILTER_USE_BOTH);
+    }
+
+    public function filterExcludeQuery(array $arr): array
+    {
+        return array_filter($arr, function ($value) {
+
+            $query = parse_url($value, PHP_URL_QUERY);
+
+           /* if($query) {
+                dump($query);
+                dump($query === null);
+                //dd(0);
+            }*/
+
+            return $query == null;
 
         }, ARRAY_FILTER_USE_BOTH);
     }

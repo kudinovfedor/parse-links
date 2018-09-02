@@ -4,18 +4,18 @@
     <div class="container py-4">
         <div class="row mb-4 align-items-end">
             <div class="col-md-8">
-                <h1 class="mb-0">Site - <span class="h4 text">{{ $site->url }} ({{ count($site->links) }})</span></h1>
+                <h1 class="mb-0">Site - <span class="h4 text">{{ $site->url }} ({{ $links_count = $site->links()->count() }})</span></h1>
             </div>
             @if($count = $site->notProcessed()->count())
                 <div class="col-md-4 text-right">
                     <form action="{{ action('FrontController@processing', ['id' => $site->id]) }}" method="post">
-                        {{ csrf_field() }}
+                        @csrf
                         <button type="submit" class="btn btn-info btn-sm">Processing ({{ $count }})</button>
                     </form>
                 </div>
             @endif
         </div>
-        @if(count($site->links))
+        @if($links_count)
             <div class="table-responsive">
                 <table class="table table-bordered table-hover table-sm">
                     <caption>List of site links</caption>
@@ -64,7 +64,7 @@
                         </tr>
                     @endforeach
                     </tbody>
-                    @if(count($site->links) > 20)
+                    @if($links_count > 20)
                         <tfoot class="thead-dark">
                         <tr>
                             <th>ID</th>
