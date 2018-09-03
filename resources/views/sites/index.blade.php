@@ -3,7 +3,7 @@
 @section('content')
     <div class="container py-4">
         <h1 class="mb-4">Parse sites</h1>
-        @if($count = count($sites))
+        @if($count = $sites->count())
             <div class="table-responsive">
                 <table class="table table-bordered table-hover table-sm">
                     <caption>List of parse sites</caption>
@@ -28,9 +28,7 @@
                             <td>{{ $site->links()->count() }}</td>
                             <td class="text-center">
                                 <a class="btn btn-primary btn-sm"
-                                   href="{{ action('SitesController@show', ['id' => $site->id]) }}">
-                                    View
-                                </a>
+                                   href="{{ action('SitesController@show', ['id' => $site->id]) }}">View</a>
                             </td>
                             <td class="text-center">
                                 <form action="{{ action('SitesController@destroy', ['id' => $site->id]) }}"
@@ -60,6 +58,8 @@
                     @endif
                 </table>
             </div>
+        @else
+            <p>No one site has not been added to parse.</p>
         @endif
     </div>
 @endsection

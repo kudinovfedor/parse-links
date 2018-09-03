@@ -10,26 +10,8 @@ use Illuminate\Http\Request;
 
 class FrontController extends Controller
 {
-    public function filterExcludeQuery(array $arr): array
-    {
-        return array_filter($arr, function ($value) {
-
-            $query = parse_url($value['url'], PHP_URL_QUERY);
-
-            if($query) {
-                 dump($query);
-                 dump($query === null);
-                 //dd(0);
-             }
-
-            return $query === null;
-
-        }, ARRAY_FILTER_USE_BOTH);
-    }
-
     public function index()
     {
-        dd($this->filterExcludeQuery(Links::all()->toArray()));
         return view('front');
     }
 

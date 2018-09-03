@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * @package App\Model
  *
  * @property-read \App\Model\Sites $site
+ * @property-read \App\Model\Childs $childs
  * @method static \Illuminate\Database\Eloquent\Builder|Links notProcessed($site_id)
  */
 class Links extends Model
@@ -19,8 +20,7 @@ class Links extends Model
     protected $fillable = [
         'url',
         'site_id',
-        //'status',
-        //'external',
+        'qlt_links',
         'processed',
     ];
 
@@ -41,5 +41,12 @@ class Links extends Model
     public function site()
     {
         return $this->belongsTo('App\Model\Sites');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function childs() {
+        return $this->belongsToMany('App\Model\Childs', 'child_link', 'link_id', 'child_id')->withTimestamps();
     }
 }

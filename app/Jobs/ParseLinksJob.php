@@ -3,7 +3,9 @@
 namespace App\Jobs;
 
 use App\Logic\Parse\ParseHtml;
+use App\Model\Childs;
 use App\Model\Links;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -46,6 +48,7 @@ class ParseLinksJob implements ShouldQueue
 
     /**
      * Create a new job instance.
+     *
      * @param string $url
      * @param int $site_id
      */
@@ -67,8 +70,19 @@ class ParseLinksJob implements ShouldQueue
         $parse = new ParseHtml($this->url);
         $new_links = $parse->links();
 
-        //$not_processed = Links::notProcessed($this->site_id)->get(['url']);
-        $not_processed = Links::all(['url']);
+        $childs_ids = [];
+
+        foreach ($new_links as $link) {
+            $child_db = Childs::where('url', $link)->firstOrCreate(['url' => $link]);
+            $childs_ids[] = $child_db->id;
+        }
+
+        Links::where('url', $this->url)
+            ->first()
+            ->childs()
+            ->attach($childs_ids);
+
+        $not_processed = Links::where('site_id', $this->site_id)->get(['url']);
         $current_links = [];
 
         foreach ($not_processed as $item) {
@@ -80,7 +94,7 @@ class ParseLinksJob implements ShouldQueue
             $current_links
         );
 
-        if(count($links) > 0) {
+        if (count($links) > 0) {
             $links_db = [];
 
             foreach ($links as $link) {
@@ -92,6 +106,7 @@ class ParseLinksJob implements ShouldQueue
                 $links_db[] = [
                     'url' => $link,
                     'path' => $parse_link['path'] ?? '/',
+                    'qlt_links' => count($new_links),
                     'site_id' => $this->site_id,
                     'created_at' => now(),
                     'updated_at' => now(),
@@ -102,7 +117,21 @@ class ParseLinksJob implements ShouldQueue
 
         }
 
-        Links::where('site_id', $this->site_id)->where('url', $this->url)->update(['processed' => true]);
+        Links::where('site_id', $this->site_id)
+            ->where('url', $this->url)
+            ->update(['processed' => true, 'qlt_links' => count($new_links)]);
 
+    }
+
+    /**
+     * The job failed to process.
+     *
+     * @param Exception $e
+     * @return void
+     */
+    public function failed(Exception $e)
+    {
+        $error = sprintf('(code: %d) : %s as %s:%d', $e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine());
+        echo $error . PHP_EOL;
     }
 }

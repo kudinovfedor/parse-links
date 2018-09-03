@@ -23,16 +23,13 @@
                     <tr>
                         <th>ID</th>
                         <th>URL</th>
-                        {{--<th>Parent ID</th>
-                        <th>Children ID</th>
-                        <th class="text-center">External</th>
-                        <th class="text-center">Status</th>--}}
+                        <th class="text-center">Links qlt.</th>
                         <th class="text-center">Processed</th>
                         <th>Created</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($site->links as $link)
+                    @foreach($site->links()->paginate(30) as $link)
                         <tr>
                             <td>{{ $link->id }}</td>
                             {{--<td>
@@ -43,22 +40,13 @@
                                 @endif
                             </td>--}}
                             <td>
-                                @if(strlen($link->url) >= 60)
+                                @if(strlen($link->url) > 60)
                                     <span class="ellipsis">{{ $link->url }}</span>
                                 @else
                                     {{ $link->url }}
                                 @endif
                             </td>
-                            {{--<td>{{ $link->parent_id }}</td>
-                            <td>{{ $link->children_id }}</td>
-                            <td class="text-center">
-                                @if($link->external)
-                                    <i class="fas fa-check text-warning" aria-hidden="true"></i>
-                                @else
-                                    <i class="fas fa-times text-muted" aria-hidden="true"></i>
-                                @endif
-                            </td>
-                            <td class="text-center">{{ $link->status }}</td>--}}
+                            <td class="text-center">{{ $link->qlt_links }}</td>
                             <td class="text-center">{{ $link->processed ? 'Yes' : 'No' }}</td>
                             <td>{{ $link->created_at }}</td>
                         </tr>
@@ -69,10 +57,7 @@
                         <tr>
                             <th>ID</th>
                             <th>URL</th>
-                            {{--<th>Parent ID</th>
-                            <th>Children ID</th>
-                            <th class="text-center">External</th>
-                            <th class="text-center">Status</th>--}}
+                            <th class="text-center">Links qlt.</th>
                             <th class="text-center">Processed</th>
                             <th>Created</th>
                         </tr>
