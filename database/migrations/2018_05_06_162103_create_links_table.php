@@ -15,7 +15,7 @@ class CreateLinksTable extends Migration
     {
         Schema::create('links', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('url', 255);
+            $table->text('url');
             $table->string('path', 255);
             $table->unsignedInteger('qlt_links')->default(0);
             $table->boolean('processed')->default(false);

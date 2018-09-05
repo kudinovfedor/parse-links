@@ -12,7 +12,9 @@ class SitesController extends Controller
      */
     public function index()
     {
+        // TODO: Select what selection is used when many sites displayed?
         $sites = Sites::all()->sortBy('domain');
+        //$sites = Sites::with('links')->get()->sortBy('domain');
 
         return view('sites.index', compact('sites'));
     }

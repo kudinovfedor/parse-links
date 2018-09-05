@@ -15,7 +15,7 @@ class CreateChildsTable extends Migration
     {
         Schema::create('childs', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('url', 255);
+            $table->text('url');
             $table->timestamps();
         });
     }

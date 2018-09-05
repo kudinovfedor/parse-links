@@ -25,7 +25,8 @@
                             {{--<td>{{ $site->url }}</td>--}}
                             <td>{{ $site->domain }}</td>
                             <td>{{ $site->created_at }}</td>
-                            <td>{{ $site->links()->count() }}</td>
+                            {{-- TODO: Select what best use when many sites displayed? --}}
+                            <td>{{ $site->links()->count() /*count($site->links)*/ }}</td>
                             <td class="text-center">
                                 <a class="btn btn-primary btn-sm"
                                    href="{{ action('SitesController@show', ['id' => $site->id]) }}">View</a>
