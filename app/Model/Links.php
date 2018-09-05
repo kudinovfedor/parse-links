@@ -5,12 +5,28 @@ namespace App\Model;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Links
- * @package App\Model
+ * App\Model\Links
  *
+ * @property int $id
+ * @property string $url
+ * @property string $path
+ * @property int $qlt_links
+ * @property int $processed
+ * @property int $site_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Model\Childs[] $childs
  * @property-read \App\Model\Sites $site
- * @property-read \App\Model\Childs $childs
- * @method static \Illuminate\Database\Eloquent\Builder|Links notProcessed($site_id)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Model\Links notProcessed($site_id)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Model\Links whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Model\Links whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Model\Links wherePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Model\Links whereProcessed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Model\Links whereQltLinks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Model\Links whereSiteId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Model\Links whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Model\Links whereUrl($value)
+ * @mixin \Eloquent
  */
 class Links extends Model
 {
