@@ -21,7 +21,7 @@ class FrontController extends Controller
             'url' => 'required|url|min:10|max:255',
         ]);
 
-        $site_url = $request->input('url');
+        $site_url = rtrim($request->input('url'), '/');
         $parse_url = parse_url($site_url);
 
         $site = new Sites;

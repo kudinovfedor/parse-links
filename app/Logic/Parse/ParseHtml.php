@@ -55,7 +55,8 @@ class ParseHtml
             //$links[] = parse_url($link->href);
             //$links[] = $link->href . $link->plaintext;
             if ($link->href) {
-                $this->links[] = urlencode(rtrim($link->href, '/'));
+                //$this->links[] = urlencode(rtrim($link->href, '/'));
+                $this->links[] = rtrim($link->href, '/');
             }
         }
 

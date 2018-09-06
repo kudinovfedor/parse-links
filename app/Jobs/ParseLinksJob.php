@@ -70,6 +70,8 @@ class ParseLinksJob implements ShouldQueue
         $parse = new ParseHtml($this->url);
         $new_links = $parse->links();
 
+        echo 'Line: ' . __LINE__ . '; Links: ' . count($new_links) . PHP_EOL;
+
         $childs_ids = [];
 
         foreach ($new_links as $link) {
@@ -88,6 +90,8 @@ class ParseLinksJob implements ShouldQueue
         foreach ($not_processed as $item) {
             $current_links[] = $item['url'];
         }
+
+        echo 'Line: ' . __LINE__ . '; Links: ' . count($current_links) . PHP_EOL;
 
         $links = array_diff(
             $new_links,

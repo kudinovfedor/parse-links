@@ -4,6 +4,8 @@ require('bootstrap');
 
 window.Popper = require('popper.js').default;
 
+require('./canvas');
+
 (($) => {
     $(() => {
 

@@ -68,36 +68,7 @@
     @yield('content')
 
 </div>
-
-<script>
-    ((w, d) => {
-        'use strict';
-
-        const html = d.documentElement, scrollBarWidth = w.innerWidth - html.clientWidth;
-
-        d.addEventListener('DOMContentLoaded', () => {
-
-            const canvas = d.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-
-            canvas.id = 'canvas';
-            canvas.width = w.innerWidth - scrollBarWidth;
-            canvas.height = w.innerHeight;
-
-            canvas.style.display = 'block';
-            canvas.style.backgroundColor = '#ccc';
-            canvas.style.position = 'absolute';
-            canvas.style.top = 0;
-            canvas.style.left = 0;
-            canvas.style.zIndex = 10;
-
-            d.body.appendChild(canvas);
-
-        });
-
-    })(window, document);
-</script>
-
+<script>window.links={!! \App\Model\Links::all(['id', 'url'])->take(2048)->toJson() !!};</script>
 <script src="{{ asset('js/app.js') }}"></script>
 @stack('js')
 </body>
