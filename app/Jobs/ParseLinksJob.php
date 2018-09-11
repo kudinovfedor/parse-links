@@ -67,10 +67,27 @@ class ParseLinksJob implements ShouldQueue
     {
         //info($this->url);
 
-        $parse = new ParseHtml($this->url);
-        $new_links = $parse->links();
+        $new_links = [];
 
-        echo 'Line: ' . __LINE__ . '; Links: ' . count($new_links) . PHP_EOL;
+        echo 'Line: ' . __LINE__ . '; URL: ' . $this->url . PHP_EOL;
+
+        try {
+
+            $parse = new ParseHtml($this->url);
+            $new_links = $parse->links();
+
+        } catch (Exception $e) {
+
+            echo 'URL: ' . $this->url . PHP_EOL;
+
+            $error = sprintf('Line: ' . __LINE__ . '; [Exception] (code: %d) : %s as %s:%d',
+                $e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine()
+            );
+            echo $error . PHP_EOL;
+
+        }
+
+        echo 'Line: ' . __LINE__ . '; New Links: ' . count($new_links) . PHP_EOL;
 
         $childs_ids = [];
 
@@ -79,24 +96,41 @@ class ParseLinksJob implements ShouldQueue
             $childs_ids[] = $child_db->id;
         }
 
+        echo 'Line: ' . __LINE__ . '; Childs Ids: ' . count($childs_ids) . PHP_EOL;
+
         Links::where('url', $this->url)
             ->first()
             ->childs()
             ->attach($childs_ids);
 
+        echo 'Line: ' . __LINE__ . '; Attach childs ids;' . PHP_EOL;
+        echo 'Line: ' . __LINE__ . '; Attempts: ' . $this->attempts() . PHP_EOL;
+
         $not_processed = Links::where('site_id', $this->site_id)->get(['url']);
+
+        echo 'Line: ' . __LINE__ . '; Not Processed: ' . count($not_processed) . PHP_EOL;
+
         $current_links = [];
 
         foreach ($not_processed as $item) {
             $current_links[] = $item['url'];
         }
 
-        echo 'Line: ' . __LINE__ . '; Links: ' . count($current_links) . PHP_EOL;
+        echo 'Line: ' . __LINE__ . '; Current Links (not processed): ' . count($current_links) . PHP_EOL;
+
+        $time = microtime(true);
 
         $links = array_diff(
             $new_links,
             $current_links
         );
+
+        $time = microtime(true) - $time;
+
+        echo 'Line: ' . __LINE__ . '; array_diff() took ' . number_format($time,
+                3) . ' seconds and returned ' . count($links) . ' entries' . PHP_EOL;
+
+        echo 'Line: ' . __LINE__ . '; Links Diff: ' . count($links) . PHP_EOL;
 
         if (count($links) > 0) {
             $links_db = [];
@@ -135,7 +169,14 @@ class ParseLinksJob implements ShouldQueue
      */
     public function failed(Exception $e)
     {
-        $error = sprintf('(code: %d) : %s as %s:%d', $e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine());
+        echo 'URL: ' . $this->url . PHP_EOL;
+
+        $error = sprintf('Line: ' . __LINE__ . '; [Exception] (code: %d) : %s as %s:%d',
+            $e->getCode(),
+            $e->getMessage(),
+            $e->getFile(),
+            $e->getLine()
+        );
         echo $error . PHP_EOL;
     }
 }

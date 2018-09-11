@@ -4,7 +4,7 @@
     const html = d.documentElement, scrollBarWidth = w.innerWidth - html.clientWidth;
     const links = w.links;
 
-    console.log(links);
+    console.log(links && links.length);
 
     const random = () => Math.random();
     const round = value => Math.round(value);
@@ -35,8 +35,7 @@
         return gradient;
     };
 
-    d.addEventListener('DOMContentLoaded', () => {
-
+    const initCanvas = () => {
         const canvas = d.createElement('canvas'), ctx = canvas.getContext('2d'), PI = Math.PI;
 
         let width = w.innerWidth, height = w.innerHeight;
@@ -100,6 +99,13 @@
         };
 
         w.addEventListener('resize', resizeCanvas);
+    };
+
+    d.addEventListener('DOMContentLoaded', () => {
+
+        if (links && links.length) {
+            initCanvas();
+        }
 
     });
 

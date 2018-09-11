@@ -16968,7 +16968,7 @@ module.exports = g;
         scrollBarWidth = w.innerWidth - html.clientWidth;
     var links = w.links;
 
-    console.log(links);
+    console.log(links && links.length);
 
     var random = function random() {
         return Math.random();
@@ -17007,8 +17007,7 @@ module.exports = g;
         return gradient;
     };
 
-    d.addEventListener('DOMContentLoaded', function () {
-
+    var initCanvas = function initCanvas() {
         var canvas = d.createElement('canvas'),
             ctx = canvas.getContext('2d'),
             PI = Math.PI;
@@ -17079,6 +17078,13 @@ module.exports = g;
         };
 
         w.addEventListener('resize', resizeCanvas);
+    };
+
+    d.addEventListener('DOMContentLoaded', function () {
+
+        if (links && links.length) {
+            initCanvas();
+        }
     });
 })(window, document);
 

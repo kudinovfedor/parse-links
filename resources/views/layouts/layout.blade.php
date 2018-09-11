@@ -68,7 +68,14 @@
     @yield('content')
 
 </div>
+{{--
 <script>window.links={!! \App\Model\Links::all(['id', 'url'])->take(2048)->toJson() !!};</script>
+<script>window.links={!! \App\Model\Links::all(['id', 'url'])->toJson() !!};</script>
+<script>window.links={!! \App\Model\Links::all()->toJson() !!};</script>
+--}}
+@if(request()->route()->getName() === 'front')
+    <script>window.links = {!! \App\Model\Links::where('site_id', 20)->limit(2048)->get(['id', 'url'])->toJson() !!};</script>
+@endif
 <script src="{{ asset('js/app.js') }}"></script>
 @stack('js')
 </body>
