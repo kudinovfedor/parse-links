@@ -10,8 +10,8 @@
     <meta name="theme-color" content="#146994">
     <link href="{{ asset('manifest.webmanifest') }}" rel="manifest">
     @stack('css')
-    <link rel="stylesheet" href="{{ asset('css/font-awesome.all.css') }}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css">
+    {{--<link rel="stylesheet" href="{{ asset('css/font-awesome.all.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css">--}}
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <script>
         (function (html) {
@@ -28,8 +28,6 @@
     </script>
 </head>
 <body>
-
-<?php //var_dump(apache_get_modules()); ?>
 
 <div class="wrapper h-100">
     <nav class="navbar navbar-dark bg-dark navbar-expand-md">
@@ -74,7 +72,53 @@
 <script>window.links={!! \App\Model\Links::all()->toJson() !!};</script>
 --}}
 @if(request()->route()->getName() === 'front')
-    <script>window.links = {!! \App\Model\Links::where('site_id', 20)->limit(2048)->get(['id', 'url'])->toJson() !!};</script>
+    {{--@php(
+    $links = \App\Model\Links::where('site_id', 3)
+    ->with(['childs' => function($query) {
+        /** @var Eloquent $query */
+        $query->select([
+            //'url',
+            //'link_id',
+            'child_id',
+        ]);
+    }])
+    ->chunk(50, function ($links) {
+        foreach ($links as $link) {
+            echo $link->url . PHP_EOL;
+        }
+
+        echo '<br>';
+    })
+    )
+
+    @php(
+    $links = \App\Model\Links::where('site_id', 3)
+    ->with(['childs' => function($query) {
+        /** @var Eloquent $query */
+        $query->select([
+            //'url',
+            //'link_id',
+            'child_id',
+        ]);
+    }])
+    ->limit(360)
+    ->get([
+        'id',
+        'url',
+     ])
+    ->toArray()
+    )
+
+    {{--@php($count = 0)
+    @foreach($links as $link)
+        @php($count += count($link['childs']))
+    @endforeach
+    {{ $count }}
+    --}}
+    <script>
+        window.links = {!! \App\Model\Links::where('site_id', 20)->limit(2048)->get(['id', 'url',])->toJson() !!};
+        console.log(window.links);
+    </script>
 @endif
 <script src="{{ asset('js/app.js') }}"></script>
 @stack('js')

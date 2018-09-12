@@ -28,6 +28,13 @@ class Childs extends Model
     ];
 
     /**
+     * @var array
+     */
+    protected $hidden = [
+        'pivot',
+    ];
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function links()

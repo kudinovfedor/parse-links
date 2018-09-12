@@ -12,6 +12,26 @@ class FrontController extends Controller
 {
     public function index()
     {
+        /*$current_links = [];
+
+        //$not_processed = Links::where('site_id', $this->site_id)->get(['url']);
+        $time_start = microtime(true);
+        Links::where('site_id', 20)->chunk(1000, function ($links) use (&$current_links) {
+            foreach ($links as $link) {
+                $current_links[] = $link->url;
+            }
+        });
+        $time_end = microtime(true);
+        $time = $time_end - $time_start;
+
+        echo 'Execution time : ' . $time . ' seconds' . PHP_EOL;
+
+        echo 'Memory Usage: ' . (memory_get_usage() / 1048576) . ' MB ' . PHP_EOL;
+
+        dd(count($current_links));*/
+
+        //dd($current_links);
+
         return view('front');
     }
 

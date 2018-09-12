@@ -38,6 +38,7 @@
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-outline-danger btn-sm">
                                         <i class="far fa-trash-alt" aria-hidden="true"></i>
+                                        Remove
                                     </button>
                                 </form>
                             </td>

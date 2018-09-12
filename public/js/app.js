@@ -16961,29 +16961,39 @@ module.exports = g;
 /* 6 */
 /***/ (function(module, exports) {
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 (function (w, d) {
     'use strict';
 
-    var html = d.documentElement,
-        scrollBarWidth = w.innerWidth - html.clientWidth;
+    //const html = d.documentElement, scrollBarWidth = w.innerWidth - html.clientWidth;
+
     var links = w.links;
 
     console.log(links && links.length);
 
+    var floor = function floor(number) {
+        return Math.floor(number);
+    };
+    var pow = function pow(number, exponent) {
+        return Math.pow(number, exponent);
+    };
     var random = function random() {
         return Math.random();
     };
-    var round = function round(value) {
-        return Math.round(value);
+    var round = function round(number) {
+        return Math.round(number);
     };
-    var floor = function floor(value) {
-        return Math.floor(value);
+    var sqrt = function sqrt(number) {
+        return Math.sqrt(number);
     };
 
-    var getRandomColor = function getRandomColor() {
-        var red = round(random() * 255),
-            green = round(random() * 255),
-            blue = round(random() * 255);
+    var getRandomRGBColor = function getRandomRGBColor() {
+        var red = round(random() * 255);
+        var green = round(random() * 255);
+        var blue = round(random() * 255);
 
         return 'rgb(' + red + ', ' + green + ', ' + blue + ')';
     };
@@ -17001,74 +17011,35 @@ module.exports = g;
 
     var getRandomLinearGradient = function getRandomLinearGradient(ctx, x, y, r) {
         var gradient = ctx.createLinearGradient(x, y - r, x, y + r);
-        gradient.addColorStop(0, getRandomColor());
-        gradient.addColorStop(1, getRandomColor());
+        gradient.addColorStop(0, getRandomRGBColor());
+        gradient.addColorStop(1, getRandomRGBColor());
 
         return gradient;
     };
 
+    var getDistance = function getDistance(x1, y1, x2, y2) {
+        var xAxisDistance = x2 - x1;
+        var yAxisDistance = y2 - y1;
+
+        return sqrt(pow(xAxisDistance, 2) + pow(yAxisDistance, 2));
+    };
+
     var initCanvas = function initCanvas() {
+
         var canvas = d.createElement('canvas'),
-            ctx = canvas.getContext('2d'),
-            PI = Math.PI;
+            ctx = canvas.getContext('2d');
+        var diameter = 30,
+            radius = diameter / 2;
 
         var width = w.innerWidth,
-            height = w.innerHeight;
+            height = w.innerHeight,
+            particles = void 0;
 
         canvas.id = 'canvas';
         canvas.width = width;
         canvas.height = height;
 
         d.body.appendChild(canvas);
-
-        var diameter = 30,
-            r = diameter / 2,
-            limit = floor(width / diameter) * floor(height / diameter);
-
-        console.time('[Draw Canvas]');
-        drawCanvas();
-        console.timeEnd('[Draw Canvas]');
-
-        function drawCanvas() {
-            var x = 0,
-                y = 0,
-                rgb = void 0;
-
-            ctx.clearRect(0, 0, width, height);
-
-            links.forEach(function (value, index) {
-                //x = floor(random() * width);
-                //y = floor(random() * height);
-
-                if (x < r) x = r;
-                if (y < r) y = r;
-                //if ((width - x) < r) x -= r;
-                //if ((height - y) < r) y -= r;
-
-                rgb = getRandomColor();
-
-                ctx.beginPath();
-
-                ctx.arc(x, y, r, 0, 2 * PI);
-                ctx.fillStyle = rgb;
-                //ctx.fillStyle = getRandomLinearGradient(ctx, x, y, r);
-                ctx.fill();
-
-                ctx.fillStyle = getContrastColor(rgb);
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(value.id, x, y);
-
-                ctx.closePath();
-
-                if (x + r <= width) x += r * 2;
-
-                if (x + r > width) {
-                    x = r;
-                    y += r * 2;
-                }
-            });
-        }
 
         var resizeCanvas = function resizeCanvas() {
             width = canvas.width = w.innerWidth;
@@ -17078,6 +17049,61 @@ module.exports = g;
         };
 
         w.addEventListener('resize', resizeCanvas);
+
+        var cols = floor(width / diameter),
+            rows = floor(height / diameter);
+
+        var limit = cols * rows;
+
+        console.log('Cols: ' + cols + '; Rows: ' + rows + '; Limit: ' + limit + ';');
+
+        console.time('[Draw Canvas]');
+        drawCanvas();
+        console.timeEnd('[Draw Canvas]');
+
+        function drawCanvas() {
+            var x = 0,
+                y = 0,
+                color = void 0,
+                particle = void 0;
+
+            ctx.clearRect(0, 0, width, height);
+
+            particles = [];
+
+            links.forEach(function (value, index) {
+
+                /* Random location
+                x = floor(random() * width);
+                y = floor(random() * height);
+                if (x < radius) x = radius;
+                if (y < radius) y = radius;
+                if ((width - x) < radius) x -= radius;
+                if ((height - y) < radius) y -= radius;
+                */
+
+                /* Location in columns and rows (part one) */
+                if (x < radius) x = radius;
+                if (y < radius) y = radius;
+
+                color = getRandomRGBColor();
+                //color = getRandomLinearGradient(ctx, x, y, radius);
+
+                particle = new Particle(value.id, x, y, radius, color);
+                particle.draw(ctx);
+
+                particles.push(particle);
+
+                /* Location in columns and rows (part two) */
+                if (x + radius <= width) x += radius * 2;
+                if (x + radius > width) {
+                    x = radius;
+                    y += radius * 2;
+                }
+            });
+
+            console.log(particles);
+        }
     };
 
     d.addEventListener('DOMContentLoaded', function () {
@@ -17086,6 +17112,39 @@ module.exports = g;
             initCanvas();
         }
     });
+
+    var Particle = function () {
+        function Particle(id, x, y, radius, color) {
+            _classCallCheck(this, Particle);
+
+            this.x = x;
+            this.y = y;
+            this.id = id;
+            this.color = color;
+            this.radius = radius;
+            this.diameter = 2 * this.radius;
+        }
+
+        _createClass(Particle, [{
+            key: 'draw',
+            value: function draw(ctx) {
+                ctx.beginPath();
+
+                ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+
+                ctx.fillStyle = getContrastColor(this.color);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.id, this.x, this.y);
+
+                ctx.closePath();
+            }
+        }]);
+
+        return Particle;
+    }();
 })(window, document);
 
 /***/ }),

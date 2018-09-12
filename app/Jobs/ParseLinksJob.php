@@ -104,17 +104,24 @@ class ParseLinksJob implements ShouldQueue
             ->attach($childs_ids);
 
         echo 'Line: ' . __LINE__ . '; Attach childs ids;' . PHP_EOL;
-        echo 'Line: ' . __LINE__ . '; Attempts: ' . $this->attempts() . PHP_EOL;
 
-        $not_processed = Links::where('site_id', $this->site_id)->get(['url']);
+        $current_links = [];
 
-        echo 'Line: ' . __LINE__ . '; Not Processed: ' . count($not_processed) . PHP_EOL;
+        //$not_processed = Links::where('site_id', $this->site_id)->get(['url']);
+        $not_processed = Links::where('site_id', $this->site_id)->chunk(1000, function ($links) use (&$current_links) {
+            foreach ($links as $link) {
+                $current_links[] = $link->url;
+            }
+        });
 
+        echo 'Line: ' . __LINE__ . '; Not Processed: ' . $not_processed . PHP_EOL;
+
+        /*
         $current_links = [];
 
         foreach ($not_processed as $item) {
             $current_links[] = $item['url'];
-        }
+        }*/
 
         echo 'Line: ' . __LINE__ . '; Current Links (not processed): ' . count($current_links) . PHP_EOL;
 
