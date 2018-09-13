@@ -16972,7 +16972,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     var links = w.links;
 
-    console.log(links && links.length);
+    //console.log(links && links.length);
 
     var floor = function floor(number) {
         return Math.floor(number);
@@ -17055,7 +17055,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
         var limit = cols * rows;
 
-        console.log('Cols: ' + cols + '; Rows: ' + rows + '; Limit: ' + limit + ';');
+        //console.log(`Cols: ${cols}; Rows: ${rows}; Limit: ${limit};`);
 
         console.time('[Draw Canvas]');
         drawCanvas();
@@ -17073,37 +17073,119 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
             links.forEach(function (value, index) {
 
-                /* Random location
+                /* Random location*/
                 x = floor(random() * width);
                 y = floor(random() * height);
                 if (x < radius) x = radius;
                 if (y < radius) y = radius;
-                if ((width - x) < radius) x -= radius;
-                if ((height - y) < radius) y -= radius;
-                */
+                if (width - x < radius) x -= radius;
+                if (height - y < radius) y -= radius;
 
                 /* Location in columns and rows (part one) */
-                if (x < radius) x = radius;
-                if (y < radius) y = radius;
+                /*
+                                if (x < radius) x = radius;
+                                if (y < radius) y = radius;*/
 
                 color = getRandomRGBColor();
                 //color = getRandomLinearGradient(ctx, x, y, radius);
 
-                particle = new Particle(value.id, x, y, radius, color);
+                particle = new Particle(value.id, value.childs, x, y, radius, color);
                 particle.draw(ctx);
 
                 particles.push(particle);
 
                 /* Location in columns and rows (part two) */
-                if (x + radius <= width) x += radius * 2;
-                if (x + radius > width) {
-                    x = radius;
-                    y += radius * 2;
-                }
+                /*
+                                if (x + radius <= width) x += 15 + radius * 2;
+                                if (x + radius > width) {
+                                    x = radius;
+                                    y += radius * 2 + 15;
+                                }*/
             });
 
-            console.log(particles);
+            for (var j = 0; j < particles.length; j++) {
+                //particles.forEach(particle => {
+                //console.log(particle);
+
+                var x1 = void 0,
+                    y1 = void 0,
+                    x2 = void 0,
+                    y2 = void 0;
+
+                var childs = particles[j].childs;
+
+                //console.log(`Child: %o`, particles[j]);
+
+                for (var i = 0; i < childs.length; i++) {
+                    var child = getParticleById(childs[i], particles);
+
+                    x1 = particles[j].x;
+                    y1 = particles[j].y;
+
+                    //console.log(getParticleById(childs[i], particles));
+                    //console.log(childs[i]);
+
+                    if (child && child.id !== particles[j].id) {
+
+                        x2 = child.x;
+                        y2 = child.y;
+
+                        console.log(getAngleSlopeLine(x1, y1, x2, y2));
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.strokeStyle = particles[j].color;
+                        //ctx.strokeStyle = child.color;
+                        ctx.lineWidth = 1;
+                        //ctx.setLineDash([5, 5]);
+                        //ctx.lineDashOffset = 100;
+                        ctx.lineTo(x2, y2);
+                        drawArrow(ctx, x1, y1, x2, y2);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+                }
+
+                break;
+            }
+
+            //console.log(particles);
         }
+    };
+
+    var getParticleById = function getParticleById(id, particles) {
+        for (var i = 0; i < particles.length; i++) {
+            if (particles[i].id !== id) {
+                continue;
+            }
+
+            return particles[i];
+        }
+
+        return false;
+    };
+
+    var drawArrow = function drawArrow(context, x1, y1, x2, y2, length) {
+        var headLength = length || 8; // length of head in pixels
+        var dx = x2 - x1;
+        var dy = y2 - y1;
+        var angle = Math.atan2(dy, dx);
+
+        context.moveTo(x2, y2);
+        context.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
+        context.moveTo(x2, y2);
+        context.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
+    };
+
+    var getAngleSlopeLine = function getAngleSlopeLine(x1, y1, x2, y2) {
+        var VR = y2 - y1;
+        var GR = x2 - x1;
+        var angularCoefficient = VR / GR;
+
+        return {
+            'atan': Math.atan(angularCoefficient) / Math.PI * 180,
+            'atan2': Math.atan2(VR, GR) / Math.PI * 180,
+            'atanh': Math.atanh(angularCoefficient) / Math.PI * 180
+        };
     };
 
     d.addEventListener('DOMContentLoaded', function () {
@@ -17114,7 +17196,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     });
 
     var Particle = function () {
-        function Particle(id, x, y, radius, color) {
+        function Particle(id, childs, x, y, radius, color) {
             _classCallCheck(this, Particle);
 
             this.x = x;
@@ -17123,6 +17205,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             this.color = color;
             this.radius = radius;
             this.diameter = 2 * this.radius;
+            this.childs = childs;
         }
 
         _createClass(Particle, [{
@@ -17135,6 +17218,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 ctx.fill();
 
                 ctx.fillStyle = getContrastColor(this.color);
+                //ctx.font = 'normal 10px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(this.id, this.x, this.y);

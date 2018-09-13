@@ -16,6 +16,6 @@
         "cross-env": "^5.2",
         "jquery": "^3.3",
         "laravel-mix": "^2.1",
-        "lodash": "^4.17.10"
+        "lodash": "^4.17.11"
     }
 }

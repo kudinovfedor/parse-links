@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('content')
-    <main class="container h-100 py-4 d-flex">
+    <main class="container py-4 d-flex">
         <form class="col-12 col-md-10 col-lg-8 m-auto" action="{{ route('front') }}" method="post">
             @csrf
             <div class="input-group input-group-lg">

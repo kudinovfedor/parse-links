@@ -4,7 +4,7 @@
     //const html = d.documentElement, scrollBarWidth = w.innerWidth - html.clientWidth;
     const links = w.links;
 
-    console.log(links && links.length);
+    //console.log(links && links.length);
 
     const floor = number => Math.floor(number);
     const pow = (number, exponent) => Math.pow(number, exponent);
@@ -74,7 +74,7 @@
 
         const limit = cols * rows;
 
-        console.log(`Cols: ${cols}; Rows: ${rows}; Limit: ${limit};`);
+        //console.log(`Cols: ${cols}; Rows: ${rows}; Limit: ${limit};`);
 
         console.time('[Draw Canvas]');
         drawCanvas();
@@ -89,37 +89,119 @@
 
             links.forEach((value, index) => {
 
-                /* Random location
+                /* Random location*/
                 x = floor(random() * width);
                 y = floor(random() * height);
                 if (x < radius) x = radius;
                 if (y < radius) y = radius;
                 if ((width - x) < radius) x -= radius;
                 if ((height - y) < radius) y -= radius;
-                */
+
 
                 /* Location in columns and rows (part one) */
-                if (x < radius) x = radius;
-                if (y < radius) y = radius;
+                /*
+                                if (x < radius) x = radius;
+                                if (y < radius) y = radius;*/
 
                 color = getRandomRGBColor();
                 //color = getRandomLinearGradient(ctx, x, y, radius);
 
-                particle = new Particle(value.id, x, y, radius, color);
+                particle = new Particle(value.id, value.childs, x, y, radius, color);
                 particle.draw(ctx);
 
                 particles.push(particle);
 
                 /* Location in columns and rows (part two) */
-                if (x + radius <= width) x += radius * 2;
-                if (x + radius > width) {
-                    x = radius;
-                    y += radius * 2;
-                }
+                /*
+                                if (x + radius <= width) x += 15 + radius * 2;
+                                if (x + radius > width) {
+                                    x = radius;
+                                    y += radius * 2 + 15;
+                                }*/
 
             });
 
-            console.log(particles);
+            for (let j = 0; j < particles.length; j++) {
+                //particles.forEach(particle => {
+                //console.log(particle);
+
+                let x1, y1, x2, y2;
+
+                let childs = particles[j].childs;
+
+                //console.log(`Child: %o`, particles[j]);
+
+                for (let i = 0; i < childs.length; i++) {
+                    let child = getParticleById(childs[i], particles);
+
+                    x1 = particles[j].x;
+                    y1 = particles[j].y;
+
+                    //console.log(getParticleById(childs[i], particles));
+                    //console.log(childs[i]);
+
+                    if (child && child.id !== particles[j].id) {
+
+                        x2 = child.x;
+                        y2 = child.y;
+
+                        console.log(getAngleSlopeLine(x1, y1, x2, y2));
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.strokeStyle = particles[j].color;
+                        //ctx.strokeStyle = child.color;
+                        ctx.lineWidth = 1;
+                        //ctx.setLineDash([5, 5]);
+                        //ctx.lineDashOffset = 100;
+                        ctx.lineTo(x2, y2);
+                        drawArrow(ctx, x1, y1, x2, y2);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+
+                }
+
+                break;
+
+            }
+
+            //console.log(particles);
+        }
+    };
+
+    const getParticleById = (id, particles) => {
+        for (let i = 0; i < particles.length; i++) {
+            if (particles[i].id !== id) {
+                continue;
+            }
+
+            return particles[i];
+        }
+
+        return false;
+    };
+
+    const drawArrow = (context, x1, y1, x2, y2, length) => {
+        const headLength = length || 8;	// length of head in pixels
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const angle = Math.atan2(dy, dx);
+
+        context.moveTo(x2, y2);
+        context.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
+        context.moveTo(x2, y2);
+        context.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
+    };
+
+    const getAngleSlopeLine = (x1, y1, x2, y2) => {
+        const VR = y2 - y1;
+        const GR = x2 - x1;
+        const angularCoefficient = VR / GR;
+
+        return {
+            'atan': Math.atan(angularCoefficient) / Math.PI * 180,
+            'atan2': Math.atan2(VR, GR) / Math.PI * 180,
+            'atanh': Math.atanh(angularCoefficient) / Math.PI * 180,
         }
     };
 
@@ -132,13 +214,14 @@
     });
 
     class Particle {
-        constructor(id, x, y, radius, color) {
+        constructor(id, childs, x, y, radius, color) {
             this.x = x;
             this.y = y;
             this.id = id;
             this.color = color;
             this.radius = radius;
             this.diameter = 2 * this.radius;
+            this.childs = childs;
         }
 
         draw(ctx) {
@@ -149,6 +232,7 @@
             ctx.fill();
 
             ctx.fillStyle = getContrastColor(this.color);
+            //ctx.font = 'normal 10px sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(this.id, this.x, this.y);

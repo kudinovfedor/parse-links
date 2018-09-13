@@ -116,7 +116,7 @@
     {{ $count }}
     --}}
     <script>
-        window.links = {!! \App\Model\Links::where('site_id', 20)->limit(2048)->get(['id', 'url',])->toJson() !!};
+        window.links = {!! json_encode($data) !!};
         console.log(window.links);
     </script>
 @endif

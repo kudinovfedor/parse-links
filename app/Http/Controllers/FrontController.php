@@ -12,27 +12,55 @@ class FrontController extends Controller
 {
     public function index()
     {
-        /*$current_links = [];
+        $data = [];
+        $page = 1;
+        $chunk_count = 50;
+        $max_results = 2048;
 
-        //$not_processed = Links::where('site_id', $this->site_id)->get(['url']);
         $time_start = microtime(true);
-        Links::where('site_id', 20)->chunk(1000, function ($links) use (&$current_links) {
-            foreach ($links as $link) {
-                $current_links[] = $link->url;
-            }
-        });
+
+        Links::where('site_id', 1)
+            ->with([
+                'childs' => function ($query) {
+                    /** @var \Illuminate\Database\Eloquent\Builder $query */
+                    $query->select([
+                        'child_id',
+                    ]);
+                },
+            ])
+            ->select([
+                'id',
+                'url',
+            ])
+            ->chunk($chunk_count, function ($links) use (&$data, &$page, $chunk_count, $max_results) {
+                /** @var Links $item */
+                foreach ($links as $item) {
+                    $data[] = [
+                        'id' => $item->id,
+                        'url' => $item->url,
+                        'childs' => array_column($item->childs->toArray(), 'child_id'),
+                    ];
+                }
+
+                $page += $chunk_count;
+
+                if ($page > $max_results) {
+                    return false;
+                }
+
+            });
+
         $time_end = microtime(true);
+
         $time = $time_end - $time_start;
 
-        echo 'Execution time : ' . $time . ' seconds' . PHP_EOL;
+        //echo 'Execution time : ' . round($time, 2) . ' seconds' . PHP_EOL;
 
-        echo 'Memory Usage: ' . (memory_get_usage() / 1048576) . ' MB ' . PHP_EOL;
+        //echo 'Memory Usage: ' . round((memory_get_usage() / 1048576), 2) . ' MB ' . PHP_EOL;
 
-        dd(count($current_links));*/
+        //dump($data);
 
-        //dd($current_links);
-
-        return view('front');
+        return view('front', compact('data'));
     }
 
     public function store(Request $request)
