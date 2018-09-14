@@ -17031,8 +17031,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         var diameter = 30,
             radius = diameter / 2;
 
-        var width = w.innerWidth,
-            height = w.innerHeight,
+        var width = w.innerWidth * 2,
+            height = w.innerHeight * 2,
             particles = void 0;
 
         canvas.id = 'canvas';
@@ -17073,18 +17073,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
             links.forEach(function (value, index) {
 
-                /* Random location*/
+                /* Random location
                 x = floor(random() * width);
                 y = floor(random() * height);
                 if (x < radius) x = radius;
                 if (y < radius) y = radius;
-                if (width - x < radius) x -= radius;
-                if (height - y < radius) y -= radius;
+                if ((width - x) < radius) x -= radius;
+                if ((height - y) < radius) y -= radius;
+                */
 
                 /* Location in columns and rows (part one) */
-                /*
-                                if (x < radius) x = radius;
-                                if (y < radius) y = radius;*/
+                if (x < radius) x = radius;
+                if (y < radius) y = radius;
 
                 color = getRandomRGBColor();
                 //color = getRandomLinearGradient(ctx, x, y, radius);
@@ -17095,57 +17095,60 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 particles.push(particle);
 
                 /* Location in columns and rows (part two) */
-                /*
-                                if (x + radius <= width) x += 15 + radius * 2;
-                                if (x + radius > width) {
-                                    x = radius;
-                                    y += radius * 2 + 15;
-                                }*/
+                if (x + radius <= width) x += 15 + radius * 2;
+                if (x + radius > width) {
+                    x = radius;
+                    y += radius * 2 + 15;
+                }
             });
 
-            for (var j = 0; j < particles.length; j++) {
-                //particles.forEach(particle => {
-                //console.log(particle);
+            var x1 = void 0,
+                y1 = void 0,
+                x2 = void 0,
+                y2 = void 0,
+                childs = void 0,
+                child = void 0;
 
-                var x1 = void 0,
-                    y1 = void 0,
-                    x2 = void 0,
-                    y2 = void 0;
+            for (var i = 0; i < particles.length; i++) {
 
-                var childs = particles[j].childs;
+                var _particle = particles[i];
+                x1 = _particle.x;
+                y1 = _particle.y;
+                childs = _particle.childs;
 
-                //console.log(`Child: %o`, particles[j]);
+                //console.log(`Child: %o`, particle);
 
-                for (var i = 0; i < childs.length; i++) {
-                    var child = getParticleById(childs[i], particles);
+                if (i > 0) {
+                    //break;
+                }
 
-                    x1 = particles[j].x;
-                    y1 = particles[j].y;
+                for (var j = 0; j < childs.length; j++) {
+                    child = getParticleById(childs[j], particles);
 
-                    //console.log(getParticleById(childs[i], particles));
-                    //console.log(childs[i]);
+                    //console.log(childs[j]);
 
-                    if (child && child.id !== particles[j].id) {
+                    if (child && child.id !== _particle.id) {
 
                         x2 = child.x;
                         y2 = child.y;
 
-                        console.log(getAngleSlopeLine(x1, y1, x2, y2));
+                        //console.log(getAngleSlopeLine(x1, y1, x2, y2));
+
                         ctx.beginPath();
+                        ctx.globalAlpha = .01;
                         ctx.moveTo(x1, y1);
-                        ctx.strokeStyle = particles[j].color;
+                        ctx.strokeStyle = _particle.color;
                         //ctx.strokeStyle = child.color;
                         ctx.lineWidth = 1;
                         //ctx.setLineDash([5, 5]);
                         //ctx.lineDashOffset = 100;
                         ctx.lineTo(x2, y2);
-                        drawArrow(ctx, x1, y1, x2, y2);
+                        ctx.drawArrow(x1, y1, x2, y2);
+                        //drawArrow(ctx, x1, y1, x2, y2);
                         ctx.stroke();
                         ctx.closePath();
                     }
                 }
-
-                break;
             }
 
             //console.log(particles);
@@ -17164,8 +17167,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         return false;
     };
 
+    /**
+     * Draw Arrow
+     * @param {CanvasRenderingContext2D} context -
+     * @param {number} x1 - The x-coordinate of first point
+     * @param {number} y1 - The x-coordinate of first point
+     * @param {number} x2 - The x-coordinate of second point
+     * @param {number} y2 - The y-coordinate of second point
+     * @param {number} [length=8] - Length of the line
+     * @returns {void}
+     */
     var drawArrow = function drawArrow(context, x1, y1, x2, y2, length) {
-        var headLength = length || 8; // length of head in pixels
+        var headLength = length || 8;
         var dx = x2 - x1;
         var dy = y2 - y1;
         var angle = Math.atan2(dy, dx);
@@ -17195,7 +17208,21 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }
     });
 
+    /**
+     * Particle
+     * @class
+     */
+
     var Particle = function () {
+        /**
+         * Create a particle
+         * @param {number} id - Id value
+         * @param {number[]} childs - Array of child elements
+         * @param {number} x - The x-coordinate
+         * @param {number} y - The y-coordinate
+         * @param {number} radius - The radius of the circle
+         * @param {string} color - A CSS color value that indicates the fill color of the drawing
+         */
         function Particle(id, childs, x, y, radius, color) {
             _classCallCheck(this, Particle);
 
@@ -17208,28 +17235,59 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             this.childs = childs;
         }
 
+        /**
+         * Draw Particle
+         * @param {CanvasRenderingContext2D} context -
+         * @example
+         * particle.draw(context);
+         */
+
+
         _createClass(Particle, [{
             key: 'draw',
-            value: function draw(ctx) {
-                ctx.beginPath();
+            value: function draw(context) {
+                context.beginPath();
 
-                ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-                ctx.fillStyle = this.color;
-                ctx.fill();
+                context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+                context.fillStyle = this.color;
+                context.fill();
 
-                ctx.fillStyle = getContrastColor(this.color);
-                //ctx.font = 'normal 10px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(this.id, this.x, this.y);
+                context.fillStyle = getContrastColor(this.color);
+                //context.font = 'normal 10px sans-serif';
+                context.textAlign = 'center';
+                context.textBaseline = 'middle';
+                context.fillText(this.id, this.x, this.y);
 
-                ctx.closePath();
+                context.closePath();
             }
         }]);
 
         return Particle;
     }();
 })(window, document);
+
+/**
+ * Draw Arrow
+ * @param {number} x1 - The x-coordinate of first point
+ * @param {number} y1 - The x-coordinate of first point
+ * @param {number} x2 - The x-coordinate of second point
+ * @param {number} y2 - The y-coordinate of second point
+ * @param {number} [length=8] - Length of the line
+ * @return {void}
+ */
+CanvasRenderingContext2D.prototype.drawArrow = function (x1, y1, x2, y2, length) {
+    var context = this;
+
+    var headLength = length || 8;
+    var dx = x2 - x1;
+    var dy = y2 - y1;
+    var angle = Math.atan2(dy, dx);
+
+    context.moveTo(x2, y2);
+    context.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
+    context.moveTo(x2, y2);
+    context.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
+};
 
 /***/ }),
 /* 7 */

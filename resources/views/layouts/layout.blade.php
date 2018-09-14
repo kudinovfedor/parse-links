@@ -66,59 +66,8 @@
     @yield('content')
 
 </div>
-{{--
-<script>window.links={!! \App\Model\Links::all(['id', 'url'])->take(2048)->toJson() !!};</script>
-<script>window.links={!! \App\Model\Links::all(['id', 'url'])->toJson() !!};</script>
-<script>window.links={!! \App\Model\Links::all()->toJson() !!};</script>
---}}
 @if(request()->route()->getName() === 'front')
-    {{--@php(
-    $links = \App\Model\Links::where('site_id', 3)
-    ->with(['childs' => function($query) {
-        /** @var Eloquent $query */
-        $query->select([
-            //'url',
-            //'link_id',
-            'child_id',
-        ]);
-    }])
-    ->chunk(50, function ($links) {
-        foreach ($links as $link) {
-            echo $link->url . PHP_EOL;
-        }
-
-        echo '<br>';
-    })
-    )
-
-    @php(
-    $links = \App\Model\Links::where('site_id', 3)
-    ->with(['childs' => function($query) {
-        /** @var Eloquent $query */
-        $query->select([
-            //'url',
-            //'link_id',
-            'child_id',
-        ]);
-    }])
-    ->limit(360)
-    ->get([
-        'id',
-        'url',
-     ])
-    ->toArray()
-    )
-
-    {{--@php($count = 0)
-    @foreach($links as $link)
-        @php($count += count($link['childs']))
-    @endforeach
-    {{ $count }}
-    --}}
-    <script>
-        window.links = {!! json_encode($data) !!};
-        console.log(window.links);
-    </script>
+    <script>window.links = {!! $data !!};</script>
 @endif
 <script src="{{ asset('js/app.js') }}"></script>
 @stack('js')

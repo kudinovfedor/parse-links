@@ -15,11 +15,12 @@ class FrontController extends Controller
         $data = [];
         $page = 1;
         $chunk_count = 50;
-        $max_results = 2048;
+        $max_results = 10000;
+        $childs_count = 0;
 
         $time_start = microtime(true);
 
-        Links::where('site_id', 1)
+        Links::where('site_id', 20)
             ->with([
                 'childs' => function ($query) {
                     /** @var \Illuminate\Database\Eloquent\Builder $query */
@@ -32,7 +33,7 @@ class FrontController extends Controller
                 'id',
                 'url',
             ])
-            ->chunk($chunk_count, function ($links) use (&$data, &$page, $chunk_count, $max_results) {
+            ->chunk($chunk_count, function ($links) use (&$data, &$page, $chunk_count, $max_results, &$childs_count) {
                 /** @var Links $item */
                 foreach ($links as $item) {
                     $data[] = [
@@ -40,6 +41,8 @@ class FrontController extends Controller
                         'url' => $item->url,
                         'childs' => array_column($item->childs->toArray(), 'child_id'),
                     ];
+
+                    $childs_count += $item->childs->count();
                 }
 
                 $page += $chunk_count;
@@ -54,11 +57,13 @@ class FrontController extends Controller
 
         $time = $time_end - $time_start;
 
-        //echo 'Execution time : ' . round($time, 2) . ' seconds' . PHP_EOL;
+        $execution_time = 'Execution time: ' . round($time, 2) . ' seconds; ';
 
-        //echo 'Memory Usage: ' . round((memory_get_usage() / 1048576), 2) . ' MB ' . PHP_EOL;
+        $memory_usage = 'Memory Usage: ' . round((memory_get_usage() / 1048576), 2) . 'MB; ';
 
-        //dump($data);
+        dump($execution_time . $memory_usage . $childs_count);
+
+        $data = json_encode($data);
 
         return view('front', compact('data'));
     }

@@ -53,7 +53,7 @@
         const canvas = d.createElement('canvas'), ctx = canvas.getContext('2d');
         const diameter = 30, radius = diameter / 2;
 
-        let width = w.innerWidth, height = w.innerHeight, particles;
+        let width = w.innerWidth * 2, height = w.innerHeight * 2, particles;
 
         canvas.id = 'canvas';
         canvas.width = width;
@@ -89,19 +89,18 @@
 
             links.forEach((value, index) => {
 
-                /* Random location*/
+                /* Random location
                 x = floor(random() * width);
                 y = floor(random() * height);
                 if (x < radius) x = radius;
                 if (y < radius) y = radius;
                 if ((width - x) < radius) x -= radius;
                 if ((height - y) < radius) y -= radius;
-
+                */
 
                 /* Location in columns and rows (part one) */
-                /*
-                                if (x < radius) x = radius;
-                                if (y < radius) y = radius;*/
+                if (x < radius) x = radius;
+                if (y < radius) y = radius;
 
                 color = getRandomRGBColor();
                 //color = getRandomLinearGradient(ctx, x, y, radius);
@@ -112,56 +111,57 @@
                 particles.push(particle);
 
                 /* Location in columns and rows (part two) */
-                /*
-                                if (x + radius <= width) x += 15 + radius * 2;
-                                if (x + radius > width) {
-                                    x = radius;
-                                    y += radius * 2 + 15;
-                                }*/
+                if (x + radius <= width) x += 15 + radius * 2;
+                if (x + radius > width) {
+                    x = radius;
+                    y += radius * 2 + 15;
+                }
 
             });
 
-            for (let j = 0; j < particles.length; j++) {
-                //particles.forEach(particle => {
-                //console.log(particle);
+            let x1, y1, x2, y2, childs, child;
 
-                let x1, y1, x2, y2;
+            for (let i = 0; i < particles.length; i++) {
 
-                let childs = particles[j].childs;
+                let particle = particles[i];
+                x1 = particle.x;
+                y1 = particle.y;
+                childs = particle.childs;
 
-                //console.log(`Child: %o`, particles[j]);
+                //console.log(`Child: %o`, particle);
 
-                for (let i = 0; i < childs.length; i++) {
-                    let child = getParticleById(childs[i], particles);
+                if (i > 0) {
+                    //break;
+                }
 
-                    x1 = particles[j].x;
-                    y1 = particles[j].y;
+                for (let j = 0; j < childs.length; j++) {
+                    child = getParticleById(childs[j], particles);
 
-                    //console.log(getParticleById(childs[i], particles));
-                    //console.log(childs[i]);
+                    //console.log(childs[j]);
 
-                    if (child && child.id !== particles[j].id) {
+                    if (child && child.id !== particle.id) {
 
                         x2 = child.x;
                         y2 = child.y;
 
-                        console.log(getAngleSlopeLine(x1, y1, x2, y2));
+                        //console.log(getAngleSlopeLine(x1, y1, x2, y2));
+
                         ctx.beginPath();
+                        ctx.globalAlpha = .01;
                         ctx.moveTo(x1, y1);
-                        ctx.strokeStyle = particles[j].color;
+                        ctx.strokeStyle = particle.color;
                         //ctx.strokeStyle = child.color;
                         ctx.lineWidth = 1;
                         //ctx.setLineDash([5, 5]);
                         //ctx.lineDashOffset = 100;
                         ctx.lineTo(x2, y2);
-                        drawArrow(ctx, x1, y1, x2, y2);
+                        ctx.drawArrow(x1, y1, x2, y2);
+                        //drawArrow(ctx, x1, y1, x2, y2);
                         ctx.stroke();
                         ctx.closePath();
                     }
 
                 }
-
-                break;
 
             }
 
@@ -181,8 +181,18 @@
         return false;
     };
 
+    /**
+     * Draw Arrow
+     * @param {CanvasRenderingContext2D} context -
+     * @param {number} x1 - The x-coordinate of first point
+     * @param {number} y1 - The x-coordinate of first point
+     * @param {number} x2 - The x-coordinate of second point
+     * @param {number} y2 - The y-coordinate of second point
+     * @param {number} [length=8] - Length of the line
+     * @returns {void}
+     */
     const drawArrow = (context, x1, y1, x2, y2, length) => {
-        const headLength = length || 8;	// length of head in pixels
+        const headLength = length || 8;
         const dx = x2 - x1;
         const dy = y2 - y1;
         const angle = Math.atan2(dy, dx);
@@ -213,7 +223,20 @@
 
     });
 
+    /**
+     * Particle
+     * @class
+     */
     class Particle {
+        /**
+         * Create a particle
+         * @param {number} id - Id value
+         * @param {number[]} childs - Array of child elements
+         * @param {number} x - The x-coordinate
+         * @param {number} y - The y-coordinate
+         * @param {number} radius - The radius of the circle
+         * @param {string} color - A CSS color value that indicates the fill color of the drawing
+         */
         constructor(id, childs, x, y, radius, color) {
             this.x = x;
             this.y = y;
@@ -224,21 +247,50 @@
             this.childs = childs;
         }
 
-        draw(ctx) {
-            ctx.beginPath();
+        /**
+         * Draw Particle
+         * @param {CanvasRenderingContext2D} context -
+         * @example
+         * particle.draw(context);
+         */
+        draw(context) {
+            context.beginPath();
 
-            ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-            ctx.fillStyle = this.color;
-            ctx.fill();
+            context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+            context.fillStyle = this.color;
+            context.fill();
 
-            ctx.fillStyle = getContrastColor(this.color);
-            //ctx.font = 'normal 10px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(this.id, this.x, this.y);
+            context.fillStyle = getContrastColor(this.color);
+            //context.font = 'normal 10px sans-serif';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillText(this.id, this.x, this.y);
 
-            ctx.closePath();
+            context.closePath();
         }
     }
 
 })(window, document);
+
+/**
+ * Draw Arrow
+ * @param {number} x1 - The x-coordinate of first point
+ * @param {number} y1 - The x-coordinate of first point
+ * @param {number} x2 - The x-coordinate of second point
+ * @param {number} y2 - The y-coordinate of second point
+ * @param {number} [length=8] - Length of the line
+ * @return {void}
+ */
+CanvasRenderingContext2D.prototype.drawArrow = function (x1, y1, x2, y2, length) {
+    const context = this;
+
+    const headLength = length || 8;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const angle = Math.atan2(dy, dx);
+
+    context.moveTo(x2, y2);
+    context.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
+    context.moveTo(x2, y2);
+    context.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
+};
