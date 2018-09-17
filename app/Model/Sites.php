@@ -54,7 +54,8 @@ class Sites extends Model
     /**
      * @return int
      */
-    public function scopeLinksCount() {
+    public function scopeLinksCount()
+    {
         return $this->links()->count();
     }
 

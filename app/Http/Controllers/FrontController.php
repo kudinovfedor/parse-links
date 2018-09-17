@@ -14,44 +14,50 @@ class FrontController extends Controller
     {
         $data = [];
         $page = 1;
-        $chunk_count = 50;
-        $max_results = 10000;
+        $chunk_count = 10000;
+        $max_results = 60000;
         $childs_count = 0;
 
         $time_start = microtime(true);
 
-        Links::where('site_id', 20)
-            ->with([
-                'childs' => function ($query) {
-                    /** @var \Illuminate\Database\Eloquent\Builder $query */
-                    $query->select([
-                        'child_id',
-                    ]);
-                },
-            ])
-            ->select([
-                'id',
-                'url',
-            ])
-            ->chunk($chunk_count, function ($links) use (&$data, &$page, $chunk_count, $max_results, &$childs_count) {
-                /** @var Links $item */
-                foreach ($links as $item) {
-                    $data[] = [
-                        'id' => $item->id,
-                        'url' => $item->url,
-                        'childs' => array_column($item->childs->toArray(), 'child_id'),
-                    ];
+        $data = \Cache::remember('site_id_20', 2, function () use (&$data, &$page, $chunk_count, $max_results, &$childs_count) {
 
-                    $childs_count += $item->childs->count();
-                }
+            Links::where('site_id', 20)
+                /*->with([
+                    'childs' => function ($query) {
+                        /** @var \Illuminate\Database\Eloquent\Builder $query *//*
+                        $query->select([
+                            'child_id',
+                        ]);
+                    },
+                ])*/
+                ->select([
+                    'id',
+                    'url',
+                ])
+                ->chunk($chunk_count, function ($links) use (&$data, &$page, $chunk_count, $max_results, &$childs_count) {
+                    /** @var Links $item */
+                    foreach ($links as $item) {
+                        $data[] = [
+                            'id' => $item->id,
+                            'url' => $item->url,
+                            //'childs' => array_column($item->childs->toArray(), 'child_id'),
+                        ];
 
-                $page += $chunk_count;
+                        //$childs_count += $item->childs->count();
+                    }
 
-                if ($page > $max_results) {
-                    return false;
-                }
+                    $page += $chunk_count;
 
-            });
+                    if ($page > $max_results) {
+                        return false;
+                    }
+
+                });
+
+            return $data;
+
+        });
 
         $time_end = microtime(true);
 

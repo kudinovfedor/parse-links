@@ -57,7 +57,7 @@
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php7 artisan package:discover"
+            "@php7dbal artisan package:discover"
         ]
     },
     "config": {

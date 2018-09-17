@@ -16972,7 +16972,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     var links = w.links;
 
-    //console.log(links && links.length);
+    //console.log(links && links.length, links && JSON.stringify(links).length);
 
     var floor = function floor(number) {
         return Math.floor(number);
@@ -17031,8 +17031,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         var diameter = 30,
             radius = diameter / 2;
 
-        var width = w.innerWidth * 2,
-            height = w.innerHeight * 2,
+        var width = w.innerWidth * 6.2,
+            height = w.innerHeight * 6.2,
             particles = void 0;
 
         canvas.id = 'canvas';
@@ -17069,6 +17069,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
             ctx.clearRect(0, 0, width, height);
 
+            //ctx.translate(0, 0);
+            //ctx.scale(15, 15);
+
             particles = [];
 
             links.forEach(function (value, index) {
@@ -17095,12 +17098,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 particles.push(particle);
 
                 /* Location in columns and rows (part two) */
-                if (x + radius <= width) x += 15 + radius * 2;
+                if (x + radius <= width) x += 5 + radius * 2;
                 if (x + radius > width) {
                     x = radius;
-                    y += radius * 2 + 15;
+                    y += radius * 2 + 5;
                 }
             });
+
+            //console.log(particles);
 
             var x1 = void 0,
                 y1 = void 0,
@@ -17116,37 +17121,42 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 y1 = _particle.y;
                 childs = _particle.childs;
 
+                //console.log(childs);
+
                 //console.log(`Child: %o`, particle);
 
                 if (i > 0) {
                     //break;
                 }
 
-                for (var j = 0; j < childs.length; j++) {
-                    child = getParticleById(childs[j], particles);
+                if (childs) {
 
-                    //console.log(childs[j]);
+                    for (var j = 0; j < childs.length; j++) {
+                        child = getParticleById(childs[j], particles);
 
-                    if (child && child.id !== _particle.id) {
+                        //console.log(childs[j]);
 
-                        x2 = child.x;
-                        y2 = child.y;
+                        if (child && child.id !== _particle.id) {
 
-                        //console.log(getAngleSlopeLine(x1, y1, x2, y2));
+                            x2 = child.x;
+                            y2 = child.y;
 
-                        ctx.beginPath();
-                        ctx.globalAlpha = .01;
-                        ctx.moveTo(x1, y1);
-                        ctx.strokeStyle = _particle.color;
-                        //ctx.strokeStyle = child.color;
-                        ctx.lineWidth = 1;
-                        //ctx.setLineDash([5, 5]);
-                        //ctx.lineDashOffset = 100;
-                        ctx.lineTo(x2, y2);
-                        ctx.drawArrow(x1, y1, x2, y2);
-                        //drawArrow(ctx, x1, y1, x2, y2);
-                        ctx.stroke();
-                        ctx.closePath();
+                            //console.log(getAngleSlopeLine(x1, y1, x2, y2));
+
+                            ctx.beginPath();
+                            ctx.globalAlpha = .01;
+                            ctx.moveTo(x1, y1);
+                            ctx.strokeStyle = _particle.color;
+                            //ctx.strokeStyle = child.color;
+                            ctx.lineWidth = 1;
+                            //ctx.setLineDash([5, 5]);
+                            //ctx.lineDashOffset = 100;
+                            ctx.lineTo(x2, y2);
+                            ctx.drawArrow(x1, y1, x2, y2);
+                            //drawArrow(ctx, x1, y1, x2, y2);
+                            ctx.stroke();
+                            ctx.closePath();
+                        }
                     }
                 }
             }

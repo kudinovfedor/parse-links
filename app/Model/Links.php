@@ -62,7 +62,16 @@ class Links extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function childs() {
-        return $this->belongsToMany('App\Model\Childs', 'child_link', 'link_id', 'child_id')->withTimestamps();
+    public function childs()
+    {
+        return $this
+            ->belongsToMany(
+                'App\Model\Childs',
+                'child_link',
+                'link_id',
+                'child_id'
+            )
+            //->withTimestamps()
+            ;
     }
 }

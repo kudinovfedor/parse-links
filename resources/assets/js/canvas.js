@@ -4,7 +4,7 @@
     //const html = d.documentElement, scrollBarWidth = w.innerWidth - html.clientWidth;
     const links = w.links;
 
-    //console.log(links && links.length);
+    //console.log(links && links.length, links && JSON.stringify(links).length);
 
     const floor = number => Math.floor(number);
     const pow = (number, exponent) => Math.pow(number, exponent);
@@ -53,7 +53,7 @@
         const canvas = d.createElement('canvas'), ctx = canvas.getContext('2d');
         const diameter = 30, radius = diameter / 2;
 
-        let width = w.innerWidth * 2, height = w.innerHeight * 2, particles;
+        let width = w.innerWidth * 6.2, height = w.innerHeight * 6.2, particles;
 
         canvas.id = 'canvas';
         canvas.width = width;
@@ -85,6 +85,9 @@
 
             ctx.clearRect(0, 0, width, height);
 
+            //ctx.translate(0, 0);
+            //ctx.scale(15, 15);
+
             particles = [];
 
             links.forEach((value, index) => {
@@ -111,13 +114,15 @@
                 particles.push(particle);
 
                 /* Location in columns and rows (part two) */
-                if (x + radius <= width) x += 15 + radius * 2;
+                if (x + radius <= width) x += 5 + radius * 2;
                 if (x + radius > width) {
                     x = radius;
-                    y += radius * 2 + 15;
+                    y += radius * 2 + 5;
                 }
 
             });
+
+            //console.log(particles);
 
             let x1, y1, x2, y2, childs, child;
 
@@ -128,37 +133,43 @@
                 y1 = particle.y;
                 childs = particle.childs;
 
+                //console.log(childs);
+
                 //console.log(`Child: %o`, particle);
 
                 if (i > 0) {
                     //break;
                 }
 
-                for (let j = 0; j < childs.length; j++) {
-                    child = getParticleById(childs[j], particles);
+                if(childs) {
 
-                    //console.log(childs[j]);
+                    for (let j = 0; j < childs.length; j++) {
+                        child = getParticleById(childs[j], particles);
 
-                    if (child && child.id !== particle.id) {
+                        //console.log(childs[j]);
 
-                        x2 = child.x;
-                        y2 = child.y;
+                        if (child && child.id !== particle.id) {
 
-                        //console.log(getAngleSlopeLine(x1, y1, x2, y2));
+                            x2 = child.x;
+                            y2 = child.y;
 
-                        ctx.beginPath();
-                        ctx.globalAlpha = .01;
-                        ctx.moveTo(x1, y1);
-                        ctx.strokeStyle = particle.color;
-                        //ctx.strokeStyle = child.color;
-                        ctx.lineWidth = 1;
-                        //ctx.setLineDash([5, 5]);
-                        //ctx.lineDashOffset = 100;
-                        ctx.lineTo(x2, y2);
-                        ctx.drawArrow(x1, y1, x2, y2);
-                        //drawArrow(ctx, x1, y1, x2, y2);
-                        ctx.stroke();
-                        ctx.closePath();
+                            //console.log(getAngleSlopeLine(x1, y1, x2, y2));
+
+                            ctx.beginPath();
+                            ctx.globalAlpha = .01;
+                            ctx.moveTo(x1, y1);
+                            ctx.strokeStyle = particle.color;
+                            //ctx.strokeStyle = child.color;
+                            ctx.lineWidth = 1;
+                            //ctx.setLineDash([5, 5]);
+                            //ctx.lineDashOffset = 100;
+                            ctx.lineTo(x2, y2);
+                            ctx.drawArrow(x1, y1, x2, y2);
+                            //drawArrow(ctx, x1, y1, x2, y2);
+                            ctx.stroke();
+                            ctx.closePath();
+                        }
+
                     }
 
                 }

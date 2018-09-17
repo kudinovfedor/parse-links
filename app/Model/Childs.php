@@ -39,6 +39,14 @@ class Childs extends Model
      */
     public function links()
     {
-        return $this->belongsToMany('App\Model\Links', 'child_link', 'child_id', 'link_id')->withTimestamps();
+        return $this
+            ->belongsToMany(
+                'App\Model\Links',
+                'child_link',
+                'child_id',
+                'link_id'
+            )
+            //->withTimestamps()
+            ;
     }
 }
